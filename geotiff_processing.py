@@ -1,3 +1,4 @@
+# from attrs import inspect
 from deepforest import main
 from deepforest.utilities import read_file
 import rasterio
@@ -9,11 +10,11 @@ import pandas as pd
 
 # ── 1. Load pre-trained model ──────────────────────────────────────────────
 model = main.deepforest()
-model.use_release()  # downloads pre-trained weights automatically
+model.load_model("weecology/deepforest-tree", revision="main")  # downloads pre-trained weights automatically
 
 # ── 2. Config ──────────────────────────────────────────────────────────────
 FILENAME    = "Belobaka3_Boeny"
-TIF_PATH     = f"{FILENAME}.tif"
+TIF_PATH     = f"../sample_drone/{FILENAME}.tif"
 OUTPUT_DIR   = f"tiles/{FILENAME}_tiles"
 TILE_SIZE    = 512        # px — window size fed into DeepForest
 OVERLAP      = 0.2        # 20% overlap avoids missing crowns at tile edges
@@ -23,11 +24,11 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ── 3. Predict on large tif (handles tiling internally) ───────────────────
 print("Running crown detection... (this will take a while)")
+# print(inspect.signature(main.deepforest.predict_tile))
 predictions = model.predict_tile(
-    raster_path=TIF_PATH,
+    path=TIF_PATH,
     patch_size=TILE_SIZE,
-    patch_overlap=OVERLAP,
-    return_plot=False
+    patch_overlap=OVERLAP
 )
 
 # predictions is a GeoDataFrame with columns:
