@@ -218,3 +218,6 @@ __marimo__/
 .streamlit/secrets.toml
 /lightning_logs
 /tiles
+/models
+/temp_tiles
+detections.csv
