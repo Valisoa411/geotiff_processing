@@ -1,4 +1,3 @@
-# from attrs import inspect
 from deepforest import main
 from deepforest.utilities import read_file
 import rasterio
@@ -9,11 +8,22 @@ import os
 import pandas as pd
 
 # ── 1. Load pre-trained model ──────────────────────────────────────────────
+MODEL_DIR = "models/deepforest_tree"
 model = main.deepforest()
-model.load_model("weecology/deepforest-tree", revision="main")  # downloads pre-trained weights automatically
+if os.path.exists(MODEL_DIR) and os.listdir(MODEL_DIR):
+    print("Loading model from local cache...")
+    model.load_model(MODEL_DIR)
+else:
+    print("Local model not found, downloading from HuggingFace...")
+    model.load_model("weecology/deepforest-tree", revision="main") # downloads pre-trained weights automatically
+    
+    # Save for next time
+    os.makedirs(MODEL_DIR, exist_ok=True)
+    model.model.save_pretrained(MODEL_DIR)
+    print(f"Model saved locally to {MODEL_DIR}")
 
 # ── 2. Config ──────────────────────────────────────────────────────────────
-FILENAME    = "Belobaka3_Boeny"
+FILENAME    = "04_08_2025_MANAPANDA_Melaky"
 TIF_PATH     = f"../sample_drone/{FILENAME}.tif"
 OUTPUT_DIR   = f"tiles/{FILENAME}_tiles"
 TILE_SIZE    = 512        # px — window size fed into DeepForest
