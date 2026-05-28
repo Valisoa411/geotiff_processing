@@ -1,2 +1,7 @@
+install python 3.12
 pip install deepforest
 pip install rasterio shapely geopandas
+install postgresql 18
+pip install psycopg2-binary sqlalchemy geopandas
+pip install fastapi uvicorn python-multipart
+install docker
